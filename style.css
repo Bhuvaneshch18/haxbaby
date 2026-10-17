@@ -700,6 +700,63 @@ body {
   transform: translateY(2px);
 }
 
+.cute-react-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.react-btn {
+  background: var(--berry);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  font-family: var(--font-ui);
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 4px 9px;
+  border-radius: 999px;
+  cursor: pointer;
+  box-shadow: 0 2px 0 var(--berry-dark);
+  transition: transform 0.15s ease, background 0.2s ease, box-shadow 0.15s ease;
+  user-select: none;
+}
+
+.react-btn:hover {
+  transform: translateY(-2px) scale(1.05);
+  background: #b5496f;
+  box-shadow: 0 4px 8px rgba(163, 64, 99, 0.35);
+}
+
+.react-btn:active {
+  transform: translateY(2px) scale(0.96);
+  box-shadow: 0 1px 0 var(--berry-dark);
+}
+
+/* Floating emoji reactions that sprout from Pip */
+.floating-reaction {
+  position: absolute;
+  pointer-events: none;
+  font-size: 1.6rem;
+  z-index: 100;
+  animation: float-and-fade 1.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes float-and-fade {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) scale(0.6) rotate(0deg);
+  }
+  50% {
+    opacity: 1;
+    transform: translate(var(--rx, 0px), -45px) scale(1.25) rotate(var(--rdeg, 12deg));
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--rx, 0px), -90px) scale(1) rotate(var(--rdeg, 24deg));
+  }
+}
+
 .floating-sticker {
   position: absolute;
   font-size: 1.4rem;
@@ -1155,48 +1212,216 @@ body {
   color: var(--text-main);
 }
 
-/* ── Footer ── */
-.os-footer {
-  margin-top: 3.5rem;
-  padding-top: 2rem;
-  border-top: 1px solid rgba(163, 64, 99, 0.2);
+/* ── Dream Dispenser Section (Serverless Engine) ── */
+.dream-dispenser-section {
+  padding-bottom: 2rem;
 }
 
-.footer-grid {
+.dispenser-card {
+  padding: 2.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.8rem;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.85) 0%, rgba(255, 248, 241, 0.95) 100%);
+  border: 2px solid rgba(255, 255, 255, 0.9);
+}
+
+.dispenser-label {
+  display: block;
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--berry);
+  letter-spacing: 0.08em;
+  margin-bottom: 0.75rem;
+}
+
+.quick-mood-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 1.2rem;
+}
+
+.mood-pill-btn {
+  background: var(--surface-card);
+  border: 1.5px solid rgba(163, 64, 99, 0.15);
+  color: var(--text-main);
+  font-family: var(--font-ui);
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.2s var(--bounce);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.04);
+}
+
+.mood-pill-btn:hover {
+  transform: translateY(-2px);
+  border-color: var(--berry);
+  color: var(--berry);
+}
+
+.mood-pill-btn.active {
+  background: var(--berry);
+  color: #fff;
+  border-color: var(--berry);
+  box-shadow: 0 4px 10px rgba(163, 64, 99, 0.35);
+  transform: translateY(-2px);
+}
+
+.dispenser-input-row {
+  display: flex;
+  gap: 12px;
+  align-items: stretch;
+}
+
+.dispenser-input-row .clay-input {
+  flex: 1;
+}
+
+.dispense-btn {
+  white-space: nowrap;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 🎟️ Dispensed Dream Ticket Card */
+.dream-ticket-container {
+  margin-top: 0.5rem;
+}
+
+.dream-ticket {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 1.6rem 2rem;
+  border: 2px dashed rgba(163, 64, 99, 0.3);
+  box-shadow: 0 10px 24px rgba(163, 64, 99, 0.08), inset 0 0 20px rgba(255, 248, 241, 0.6);
+  position: relative;
+  transition: transform 0.3s var(--bounce), box-shadow 0.3s ease;
+}
+
+.dream-ticket.dispensed-pop {
+  animation: ticket-drop 0.5s var(--bounce);
+}
+
+@keyframes ticket-drop {
+  0% { transform: translateY(-16px) scale(0.96); opacity: 0.4; }
+  100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+.ticket-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1.5px dashed rgba(163, 64, 99, 0.2);
+  padding-bottom: 0.8rem;
+  margin-bottom: 1.2rem;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.ticket-stamp {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--berry);
+  background: rgba(163, 64, 99, 0.08);
+  padding: 4px 10px;
+  border-radius: 6px;
+  letter-spacing: 0.05em;
+}
+
+.ticket-time {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+.dream-title {
+  font-family: var(--font-serif);
+  font-size: 1.45rem;
+  color: var(--text-main);
+  margin-bottom: 0.6rem;
+}
+
+.dream-story {
+  font-size: 0.98rem;
+  line-height: 1.65;
+  color: var(--text-main);
+  margin-bottom: 1.4rem;
+}
+
+.dream-meta-grid {
   display: grid;
-  grid-template-columns: 1.2fr 1fr 1fr;
-  gap: 2rem;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  background: var(--surface-card);
+  padding: 1.2rem;
+  border-radius: 14px;
+  border: 1px solid rgba(163, 64, 99, 0.1);
 }
 
-.footer-brand {
+.meta-label {
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--berry);
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.06em;
+}
+
+.ingredients-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ingredients-list li {
+  font-size: 0.85rem;
+  color: var(--text-muted);
   display: flex;
   align-items: center;
   gap: 6px;
-  color: var(--berry);
-  font-size: 1.1rem;
-  margin-bottom: 0.4rem;
 }
 
-.footer-tagline {
-  font-size: 0.85rem;
-  color: var(--text-muted);
+.ingredients-list li::before {
+  content: '✦';
+  color: var(--gold);
+  font-size: 0.75rem;
 }
 
-.footer-col strong {
-  display: block;
-  color: var(--berry);
-  margin-bottom: 0.4rem;
+.whisper-box {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
-.footer-col p {
-  color: var(--text-muted);
+.whisper-quote {
+  font-style: italic;
+  font-size: 0.88rem;
+  color: var(--text-main);
   line-height: 1.5;
-  margin-bottom: 0.3rem;
+  margin: 0 0 1rem 0;
+  border-left: 3px solid var(--berry);
+  padding-left: 10px;
 }
 
-.footer-col a {
-  color: var(--berry);
-  text-decoration: underline;
+.melody-btn {
+  align-self: flex-start;
+  font-size: 0.82rem;
+  padding: 6px 14px;
+  background: var(--berry);
+  color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 3px 0 var(--berry-dark);
+}
+
+.melody-btn:active {
+  transform: translateY(2px);
 }
 
 /* ── Bottom Taskbar Dock ── */
@@ -1344,7 +1569,7 @@ body {
   .projects-grid {
     grid-template-columns: 1fr;
   }
-  .footer-grid {
+  .dream-meta-grid {
     grid-template-columns: 1fr;
   }
 }
@@ -1394,5 +1619,11 @@ body {
   }
   .guestbook-form .form-row {
     flex-direction: column;
+  }
+  .dispenser-input-row {
+    flex-direction: column;
+  }
+  .dispense-btn {
+    width: 100%;
   }
 }

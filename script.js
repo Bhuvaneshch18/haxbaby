@@ -515,28 +515,99 @@ document.addEventListener('DOMContentLoaded', () => {
     easterBtn.addEventListener('click', triggerEasterEgg);
   }
 
-  // Mobile/Desktop Avatar Poke
+  // Live Cloud Hugs & Cute Reactions (Backed by /api/reactions)
   let pokeCount = 0;
-  const pokeBtn = document.getElementById('btn-poke-pip');
   const pipHeroImg = document.getElementById('pip-hero-img');
 
-  function handlePoke() {
+  function spawnFloatingReaction(sourceEl, emoji) {
+    const rect = sourceEl ? sourceEl.getBoundingClientRect() : (pipHeroImg ? pipHeroImg.getBoundingClientRect() : null);
+    const floater = document.createElement('span');
+    floater.className = 'floating-reaction';
+    floater.textContent = emoji || '💖';
+    
+    const left = rect ? rect.left + rect.width / 2 - 12 : window.innerWidth / 2;
+    const top = rect ? rect.top - 10 : window.innerHeight / 2;
+    
+    floater.style.left = `${left}px`;
+    floater.style.top = `${top}px`;
+    floater.style.setProperty('--rx', `${(Math.random() - 0.5) * 60}px`);
+    floater.style.setProperty('--rdeg', `${(Math.random() - 0.5) * 36}deg`);
+    
+    document.body.appendChild(floater);
+    setTimeout(() => floater.remove(), 1600);
+  }
+
+  const fallbackReactions = {
+    hug: [
+      "Pip wraps you in a fluffy marshmallow star-blanket! ☁️",
+      "Pip hugs you back with tiny warm hands! You feel sleepy and safe.",
+      "A soft puff of cloud dust billows as Pip snuggles close! 🧸"
+    ],
+    tickle: [
+      "Pip bursts into squeaky baby giggles and kicks his tiny feet! 🌟",
+      "Pip's nightcap bow jingles with delighted baby laughter!",
+      "Pip tries not to laugh, snorts cute stardust, and giggles! ✨"
+    ],
+    heart: [
+      "Pip blushes warm berry pink and his amber eyes glow bright! 💖",
+      "Pip sends a floating constellation heart directly to your pillow!",
+      "Pip catches your heart and presses it gently to his nightcap! 🌙"
+    ]
+  };
+
+  async function handleReaction(type, triggerElement) {
     pokeCount++;
-    playTone(720 + Math.random() * 200, 0.15, 'triangle', 0.12);
+    playTone(660 + Math.random() * 260, 0.18, 'sine', 0.14);
+    
     if (pipHeroImg) {
-      pipHeroImg.style.transform = 'scale(1.15) rotate(6deg)';
-      setTimeout(() => {
-        pipHeroImg.style.transform = '';
-      }, 300);
+      pipHeroImg.style.transform = 'scale(1.14) rotate(4deg)';
+      setTimeout(() => { pipHeroImg.style.transform = ''; }, 320);
     }
+
+    const emojiMap = { hug: '☁️', tickle: '✨', heart: '💖' };
+    spawnFloatingReaction(triggerElement || pipHeroImg, emojiMap[type] || '💖');
+
+    let replyMessage = '';
+    try {
+      const res = await fetch('/api/reactions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        replyMessage = data.message;
+      }
+    } catch (err) {
+      // Offline fallback
+    }
+
+    if (!replyMessage) {
+      const pool = fallbackReactions[type] || fallbackReactions.heart;
+      replyMessage = pool[Math.floor(Math.random() * pool.length)];
+    }
+
+    showToast(type === 'hug' ? 'Cloud Hug Delivered! ☁️' : (type === 'tickle' ? 'Pip Giggled! ✨' : 'Bedtime Love Sent! 💖'), replyMessage);
+
     if (pokeCount >= 4) {
       pokeCount = 0;
       triggerEasterEgg();
     }
   }
 
-  if (pokeBtn) pokeBtn.addEventListener('click', handlePoke);
-  if (pipHeroImg) pipHeroImg.addEventListener('click', handlePoke);
+  document.querySelectorAll('.react-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const reactionType = btn.getAttribute('data-reaction') || 'heart';
+      handleReaction(reactionType, btn);
+    });
+  });
+
+  if (pipHeroImg) {
+    pipHeroImg.addEventListener('click', () => {
+      handleReaction('tickle', pipHeroImg);
+    });
+  }
 
   // Keyboard shortcut "dream"
   let keySequence = '';
@@ -573,6 +644,163 @@ document.addEventListener('DOMContentLoaded', () => {
     btnMin.addEventListener('click', () => {
       mainWindow.style.transform = 'translateY(15px) scale(0.98)';
       setTimeout(() => { mainWindow.style.transform = ''; }, 350);
+    });
+  }
+
+
+  /* ==========================================================================
+     13. SERVERLESS BEDTIME DREAM DISPENSER (/api/dream)
+     ========================================================================== */
+  const moodButtons = document.querySelectorAll('.mood-pill-btn');
+  const thoughtInput = document.getElementById('dream-thought-input');
+  const btnDispenseDream = document.getElementById('btn-dispense-dream');
+  const dreamTicket = document.getElementById('dream-ticket');
+  const ticketTitle = document.getElementById('ticket-title');
+  const ticketStory = document.getElementById('ticket-story');
+  const ticketIngredients = document.getElementById('ticket-ingredients');
+  const ticketWhisper = document.getElementById('ticket-whisper');
+  const ticketTime = document.getElementById('ticket-time');
+  const btnPlayMelody = document.getElementById('btn-play-dream-melody');
+
+  let activeMood = 'cozy';
+  let currentDreamMelody = [523.25, 659.25, 783.99, 880.00, 783.99, 659.25, 523.25];
+
+  moodButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      moodButtons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeMood = btn.getAttribute('data-mood') || 'cozy';
+      playTone(520, 0.1, 'sine', 0.08);
+    });
+  });
+
+  function playDreamMelodySequence(melodyArr) {
+    if (!melodyArr || !melodyArr.length) return;
+    initAudio();
+    melodyArr.forEach((freq, idx) => {
+      setTimeout(() => {
+        playTone(freq, 0.38, 'sine', 0.15);
+      }, idx * 280);
+    });
+  }
+
+  if (btnPlayMelody) {
+    btnPlayMelody.addEventListener('click', () => {
+      playDreamMelodySequence(currentDreamMelody);
+    });
+  }
+
+  async function dispenseDream() {
+    const thoughtText = thoughtInput ? thoughtInput.value.trim() : '';
+    if (btnDispenseDream) {
+      btnDispenseDream.disabled = true;
+      btnDispenseDream.innerHTML = '<span>Weaving... ✨</span>';
+    }
+
+    playTone(600, 0.2, 'triangle', 0.1);
+
+    let dreamData = null;
+    try {
+      const res = await fetch('/api/dream', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mood: activeMood, thought: thoughtText })
+      });
+      if (res.ok) {
+        const json = await res.json();
+        if (json.success && json.dream) {
+          dreamData = json.dream;
+        }
+      }
+    } catch (e) {
+      // Fallback in case of offline/local preview
+    }
+
+    // Client-side fallback if server unreachable
+    if (!dreamData) {
+      const localDreams = {
+        cozy: {
+          title: "The Marshmallow Blanket Fort",
+          story: thoughtText ? `You whispered: "${thoughtText}". Pip built a soft den out of puffy clouds.` : "Pip built a soft den out of puffy marshmallow clouds and wrapped you in a quilt stitched from starlight.",
+          ingredients: ["3 pinches of cinnamon moon-dust", "1 extra-fluffy cloud pillow", "2 purring starlight kittens", "A mug of warm berry milk"],
+          melody: [523.25, 659.25, 783.99, 880.00, 783.99, 659.25, 523.25],
+          whisper: "Pip says: 'I fluffed your pillow twice. Have the sweetest dreams!' 💤"
+        },
+        starry: {
+          title: "Lantern Walk Across the Milky Way",
+          story: thoughtText ? `You whispered: "${thoughtText}". Pip took your hand to stroll through star dust.` : "Pip took your hand and stepped onto a bridge made of shooting stars, where each star chimes as you walk.",
+          ingredients: ["4 drops of liquid starlight", "1 silver pocket compass", "A basket of gentle celestial whispers", "A crescent moon nightlight"],
+          melody: [659.25, 783.99, 880.00, 987.77, 1046.50, 880.00, 783.99],
+          whisper: "Pip says: 'Look up! That brightest star is winking just at you.' ✨"
+        },
+        flying: {
+          title: "Voyage Above the Sleepy Rooftops",
+          story: thoughtText ? `You whispered: "${thoughtText}". Pip steered a soft cloud glider high into the sky.` : "Pip scooped you onto a soft white cloud, gliding effortlessly over chimneys and quiet sleeping gardens.",
+          ingredients: ["1 cloud glider with velvet wings", "A jar of zero-gravity dream syrup", "3 soothing gusts of midnight breeze", "A lantern with an amber flame"],
+          melody: [587.33, 659.25, 880.00, 783.99, 659.25, 587.33, 523.25],
+          whisper: "Pip says: 'Hold on to Pip's nightcap bow, we're floating through the clouds!' ☁️"
+        },
+        adventurous: {
+          title: "The Moonlit Carousel of Baby Dragons",
+          story: thoughtText ? `You whispered: "${thoughtText}". Pip unlocked the secret toy attic where plush dragons snooze.` : "You and Pip discovered an ancient clockwork carousel whose wooden horses dance to gentle music box chimes.",
+          ingredients: ["1 miniature brass winding key", "A plush dragon who only breathes bubbles", "2 enchanted storybook pages", "A pocketful of sweet stardust"],
+          melody: [523.25, 587.33, 659.25, 783.99, 880.00, 987.77, 880.00],
+          whisper: "Pip says: 'Every big adventure needs a sleepy hero at the end.' 🏰"
+        },
+        sleepy: {
+          title: "The Very, Very Long Yawn",
+          story: thoughtText ? `You whispered: "${thoughtText}". Pip gave a gigantic contagion yawn.` : "Pip gave a huge, squeaky baby yawn that was so contagious the entire night sky closed its eyes with you.",
+          ingredients: ["5 drops of lavender dream oil", "1 gigantic contagion yawn", "A pair of velvet night socks", "A bedtime kiss on the forehead"],
+          melody: [440.00, 523.25, 659.25, 587.33, 523.25, 440.00, 392.00],
+          whisper: "Pip whispers: 'Shh... close your eyes now. Pip will guard your sleep.' 💤"
+        }
+      };
+      dreamData = localDreams[activeMood] || localDreams.cozy;
+      dreamData.craftedAt = new Date().toLocaleTimeString('en-US', { hour12: false }) + ' IST';
+    }
+
+    // Render into ticket
+    if (ticketTitle) ticketTitle.textContent = dreamData.title;
+    if (ticketStory) ticketStory.textContent = dreamData.story;
+    if (ticketWhisper) ticketWhisper.textContent = dreamData.whisper;
+    if (ticketTime) ticketTime.textContent = `DISPATCHED AT ${dreamData.craftedAt || 'JUST NOW'}`;
+    
+    if (ticketIngredients && Array.isArray(dreamData.ingredients)) {
+      ticketIngredients.innerHTML = dreamData.ingredients.map(ing => `<li>${ing}</li>`).join('');
+    }
+
+    if (dreamData.melody && Array.isArray(dreamData.melody)) {
+      currentDreamMelody = dreamData.melody;
+    }
+
+    if (dreamTicket) {
+      dreamTicket.classList.remove('dispensed-pop');
+      void dreamTicket.offsetWidth; // Force reflow
+      dreamTicket.classList.add('dispensed-pop');
+    }
+
+    // Play melody chime
+    playDreamMelodySequence(currentDreamMelody);
+
+    // Reset button
+    if (btnDispenseDream) {
+      btnDispenseDream.disabled = false;
+      btnDispenseDream.innerHTML = '<span>Dispense Dream ✦</span>';
+    }
+
+    showToast('Dream Dispensed! 🌙', `Pip crafted "${dreamData.title}" for your night.`);
+  }
+
+  if (btnDispenseDream) {
+    btnDispenseDream.addEventListener('click', dispenseDream);
+  }
+
+  if (thoughtInput) {
+    thoughtInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        dispenseDream();
+      }
     });
   }
 

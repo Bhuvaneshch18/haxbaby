@@ -16,7 +16,7 @@
   <!-- Canvas Confetti -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js" defer></script>
   
-  <link rel="stylesheet" href="style.css?v=3">
+  <link rel="stylesheet" href="style.css?v=4">
 </head>
 <body>
   <!-- 🌟 Sparkle Particle Canvas -->
@@ -146,14 +146,18 @@
                   </div>
                 </div>
 
-                <!-- Character Status Bar -->
+                <!-- Character Status Bar with Live Reactions -->
                 <div class="avatar-caption clay-capsule">
                   <span class="sleep-pulse">💤</span>
                   <div class="caption-copy">
                     <strong>Pip · Status: Online</strong>
-                    <small class="font-mono">Engineering dreams for sleepy creatures</small>
+                    <small class="font-mono">Send Pip some bedtime love:</small>
                   </div>
-                  <button class="poke-btn" id="btn-poke-pip" title="Tickle Pip!">Giggle</button>
+                  <div class="cute-react-group">
+                    <button class="poke-btn react-btn" data-reaction="hug" title="Send Cloud Hug">Hug ☁️</button>
+                    <button class="poke-btn react-btn" data-reaction="tickle" title="Tickle Pip">Giggle ✨</button>
+                    <button class="poke-btn react-btn" data-reaction="heart" title="Send Bedtime Heart">Heart 💖</button>
+                  </div>
                 </div>
 
                 <!-- Floating Badges -->
@@ -386,34 +390,71 @@
           </div>
         </section>
 
-        <!-- 🏁 Footer & Attributions -->
-        <footer class="os-footer" role="contentinfo">
-          <div class="footer-grid">
-            <div class="footer-col">
-              <div class="footer-brand">
-                <span class="brand-glyph">★</span>
-                <strong>Pip's Midnight Nursery</strong>
+        <!-- 🌙 Live Serverless Backend Feature: Pip's Bedtime Dream Dispenser -->
+        <section class="os-section dream-dispenser-section" id="dream-dispenser">
+          <div class="section-header">
+            <span class="section-tag clay-tag">✦ LIVE DREAM DISPENSER</span>
+            <h2 class="section-heading">Order a Custom Bedtime Dream</h2>
+            <p class="section-sub">
+              Tell Pip what bedtime vibe you need tonight. Pip's backend dream engine weaves a custom dream story, sleepy ingredients, and a lullaby chime.
+            </p>
+          </div>
+
+          <div class="dispenser-card clay-card">
+            <div class="dispenser-controls">
+              <label class="dispenser-label font-mono">CHOOSE YOUR BEDTIME VIBE:</label>
+              <div class="quick-mood-pills" id="mood-pill-group">
+                <button type="button" class="mood-pill-btn active" data-mood="cozy">Cozy Fort 🧸</button>
+                <button type="button" class="mood-pill-btn" data-mood="starry">Milky Way ✨</button>
+                <button type="button" class="mood-pill-btn" data-mood="flying">Cloud Glider ☁️</button>
+                <button type="button" class="mood-pill-btn" data-mood="adventurous">Secret Castle 🏰</button>
+                <button type="button" class="mood-pill-btn" data-mood="sleepy">Deep Slumber 💤</button>
               </div>
-              <p class="footer-tagline">
-                Built for <a href="https://hax.baby/first-website" target="_blank" rel="noopener">Baby's First Website Hackathon</a> (17–19 October 2026).
-              </p>
+
+              <div class="dispenser-input-row">
+                <input type="text" id="dream-thought-input" class="clay-input" placeholder="Whisper an optional dream wish (e.g. hugging baby dragons)..." maxlength="80">
+                <button type="button" id="btn-dispense-dream" class="clay-btn primary-btn dispense-btn">
+                  <span>Dispense Dream ✦</span>
+                </button>
+              </div>
             </div>
 
-            <div class="footer-col font-mono text-xs">
-              <strong>OFFICIAL CREDITS</strong>
-              <p>Character &amp; Canon: Pip the Skull Baby by <a href="https://hax.baby" target="_blank" rel="noopener">haX.baby</a>.</p>
-              <p>Official Assets: High-resolution studio renders from haX.baby Creator Asset Pack.</p>
-              <p>Audio Engine: Native Web Audio API generative synthesizer.</p>
-            </div>
-
-            <div class="footer-col font-mono text-xs">
-              <strong>SYSTEM SPECS</strong>
-              <p>Vite + Vanilla HTML5/CSS3 + Web Audio</p>
-              <p>Strictly No Tracking · Zero Console Errors</p>
-              <p>© 2026 Pip · Midnight Nursery</p>
+            <!-- Dream Dispensed Output Area -->
+            <div class="dream-ticket-container" id="dream-ticket-container">
+              <div class="dream-ticket clay-card" id="dream-ticket">
+                <div class="ticket-header">
+                  <div class="ticket-stamp font-mono">★ PIPILIO DREAM DISPENSER</div>
+                  <span class="ticket-time font-mono" id="ticket-time">LIVE NURSERY DISPATCH</span>
+                </div>
+                <div class="ticket-body">
+                  <h3 class="dream-title" id="ticket-title">The Marshmallow Blanket Fort</h3>
+                  <p class="dream-story" id="ticket-story">Pip built a soft den out of puffy marshmallow clouds and wrapped you in a quilt stitched from starlight.</p>
+                  
+                  <div class="dream-meta-grid">
+                    <div class="ingredients-box">
+                      <span class="meta-label font-mono">DREAM INGREDIENTS:</span>
+                      <ul class="ingredients-list" id="ticket-ingredients">
+                        <li>3 pinches of cinnamon moon-dust</li>
+                        <li>1 extra-fluffy cloud pillow</li>
+                        <li>2 purring starlight kittens</li>
+                        <li>A mug of warm berry milk</li>
+                      </ul>
+                    </div>
+                    <div class="whisper-box">
+                      <span class="meta-label font-mono">PIP'S BEDTIME NOTE:</span>
+                      <blockquote class="whisper-quote" id="ticket-whisper">
+                        Pip says: 'I fluffed your pillow twice. Have the sweetest dreams!' 💤
+                      </blockquote>
+                      <button type="button" id="btn-play-dream-melody" class="clay-btn melody-btn">
+                        <span>▶ Play Dream Chimes</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-        </footer>
+        </section>
 
       </div> <!-- /window-content -->
     </main> <!-- /os-window-shell -->
@@ -440,6 +481,9 @@
           </a>
           <a href="#guestbook" class="tab-item" data-tab="guestbook">
             <span>💌</span> <span class="tab-label">Guestbook</span>
+          </a>
+          <a href="#dream-dispenser" class="tab-item" data-tab="dream-dispenser">
+            <span>🌙</span> <span class="tab-label">Dream Dispenser</span>
           </a>
         </div>
 
@@ -471,6 +515,6 @@
     </div>
   </div>
 
-  <script src="script.js?v=3"></script>
+  <script src="script.js?v=4"></script>
 </body>
 </html>
