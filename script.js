@@ -198,7 +198,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const rightBox = document.querySelector('.right-eye-box');
 
   if (leftPupil && rightPupil && leftBox && rightBox) {
-    const maxRadius = 1.8; // subtle gaze shift in pixels, strictly inside socket cavity
+    const maxRadius = 3.0; // max travel in pixels inside socket cavity
 
     window.addEventListener('mousemove', (e) => {
       [
@@ -213,10 +213,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const deltaY = e.clientY - eyeCenterY;
         const angle = Math.atan2(deltaY, deltaX);
 
-        // Smooth gradual distance scaling across screen rather than abrupt pegging
+        // Smooth distance scaling based on distance to cursor
         const screenDistance = Math.hypot(deltaX, deltaY);
-        const maxScreenReach = Math.min(window.innerWidth, window.innerHeight) * 0.45;
-        const ratio = Math.min(1, screenDistance / Math.max(100, maxScreenReach));
+        const maxReach = 320;
+        const ratio = Math.min(1, screenDistance / maxReach);
         const travel = ratio * maxRadius;
 
         const moveX = Math.cos(angle) * travel;
@@ -229,8 +229,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Touchscreen / Mobile Tilt Support
     window.addEventListener('deviceorientation', (e) => {
       if (e.gamma === null) return;
-      const moveX = Math.max(-maxRadius, Math.min(maxRadius, e.gamma / 15));
-      const moveY = Math.max(-maxRadius, Math.min(maxRadius, (e.beta - 40) / 15));
+      const moveX = Math.max(-maxRadius, Math.min(maxRadius, e.gamma / 12));
+      const moveY = Math.max(-maxRadius, Math.min(maxRadius, (e.beta - 40) / 12));
       leftPupil.style.transform = `translate(${moveX.toFixed(2)}px, ${moveY.toFixed(2)}px)`;
       rightPupil.style.transform = `translate(${moveX.toFixed(2)}px, ${moveY.toFixed(2)}px)`;
     });

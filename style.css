@@ -604,27 +604,27 @@ body {
 }
 
 .left-eye-box {
-  left: 43.44%;
-  top: 40.34%;
+  left: 43.91%;
+  top: 40.42%;
 }
 
 .right-eye-box {
-  left: 57.91%;
-  top: 38.02%;
+  left: 58.36%;
+  top: 37.55%;
 }
 
 .pip-pupil {
-  width: 7px;
-  height: 7px;
+  width: 9px;
+  height: 9px;
   border-radius: 50%;
-  background: radial-gradient(circle, #ffffff 20%, #ffe999 50%, #f5c842 85%, rgba(245, 200, 66, 0.2) 100%);
+  background: radial-gradient(circle, #ffffff 15%, #ffe680 40%, #f5c842 75%, rgba(245, 200, 66, 0.2) 100%);
   box-shadow: 
-    0 0 4px #f5c842,
-    0 0 6px rgba(245, 200, 66, 0.6);
+    0 0 5px #f5c842,
+    0 0 8px rgba(245, 200, 66, 0.7);
   mix-blend-mode: screen;
-  transition: transform 0.1s cubic-bezier(0.25, 1, 0.5, 1);
   pointer-events: none;
   flex-shrink: 0;
+  will-change: transform;
 }
 
 /* Avatar Status Caption Capsule */
