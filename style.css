@@ -611,15 +611,16 @@ body {
 }
 
 .pip-pupil {
-  width: 13px;
-  height: 13px;
+  width: 9px;
+  height: 9px;
   border-radius: 50%;
-  background: radial-gradient(circle, #ffffff 15%, #ffe680 40%, #f5c842 75%, rgba(245, 200, 66, 0.3) 100%);
+  background: radial-gradient(circle, #ffffff 10%, #ffe88a 40%, #f5c842 75%, transparent 100%);
   box-shadow: 
-    0 0 8px #f5c842,
-    0 0 16px rgba(245, 200, 66, 0.95),
-    0 0 24px rgba(245, 200, 66, 0.6);
+    0 0 6px #f5c842,
+    0 0 12px rgba(245, 200, 66, 0.85);
+  mix-blend-mode: screen;
   transition: transform 0.08s ease-out;
+  pointer-events: none;
 }
 
 /* Avatar Status Caption Capsule */

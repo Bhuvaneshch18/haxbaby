@@ -198,7 +198,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const rightBox = document.querySelector('.right-eye-box');
 
   if (leftPupil && rightPupil && leftBox && rightBox) {
-    const maxRadius = 4.5; // maximum movement in pixels strictly within socket
+    const maxRadius = 3.8; // maximum movement in pixels strictly within socket
 
     window.addEventListener('mousemove', (e) => {
       [
@@ -213,7 +213,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const deltaY = e.clientY - eyeCenterY;
         const angle = Math.atan2(deltaY, deltaX);
 
-        const distance = Math.min(maxRadius, Math.hypot(deltaX, deltaY) / 25);
+        const distance = Math.min(maxRadius, Math.hypot(deltaX, deltaY) / 30);
         const moveX = Math.cos(angle) * distance;
         const moveY = Math.sin(angle) * distance;
 
