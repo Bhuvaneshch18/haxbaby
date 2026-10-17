@@ -1,0 +1,5 @@
+*.zip
+assets/*.zip
+assets/track1-pip-asset-pack.zip
+.git
+.gitignore
