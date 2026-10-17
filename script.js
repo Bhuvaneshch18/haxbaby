@@ -192,37 +192,42 @@ document.addEventListener('DOMContentLoaded', () => {
   /* ==========================================================================
      4. PIP'S INTERACTIVE EYE TRACKING (AMBER PUPIL RIG)
      ========================================================================== */
-  const pipEyes = document.getElementById('pip-eyes');
   const leftPupil = document.getElementById('left-pupil');
   const rightPupil = document.getElementById('right-pupil');
+  const leftBox = document.querySelector('.left-eye-box');
+  const rightBox = document.querySelector('.right-eye-box');
 
-  if (pipEyes && leftPupil && rightPupil) {
-    const maxRadius = 6.5; // maximum movement in pixels within socket
+  if (leftPupil && rightPupil && leftBox && rightBox) {
+    const maxRadius = 4.5; // maximum movement in pixels strictly within socket
 
     window.addEventListener('mousemove', (e) => {
-      const rect = pipEyes.getBoundingClientRect();
-      const eyeCenterX = rect.left + rect.width / 2;
-      const eyeCenterY = rect.top + rect.height / 2;
+      [
+        { pupil: leftPupil, box: leftBox },
+        { pupil: rightPupil, box: rightBox }
+      ].forEach(({ pupil, box }) => {
+        const rect = box.getBoundingClientRect();
+        const eyeCenterX = rect.left + rect.width / 2;
+        const eyeCenterY = rect.top + rect.height / 2;
 
-      const deltaX = e.clientX - eyeCenterX;
-      const deltaY = e.clientY - eyeCenterY;
-      const angle = Math.atan2(deltaY, deltaX);
+        const deltaX = e.clientX - eyeCenterX;
+        const deltaY = e.clientY - eyeCenterY;
+        const angle = Math.atan2(deltaY, deltaX);
 
-      const distance = Math.min(maxRadius, Math.hypot(deltaX, deltaY) / 20);
-      const moveX = Math.cos(angle) * distance;
-      const moveY = Math.sin(angle) * distance;
+        const distance = Math.min(maxRadius, Math.hypot(deltaX, deltaY) / 25);
+        const moveX = Math.cos(angle) * distance;
+        const moveY = Math.sin(angle) * distance;
 
-      leftPupil.style.transform = `translate(${moveX}px, ${moveY}px)`;
-      rightPupil.style.transform = `translate(${moveX}px, ${moveY}px)`;
+        pupil.style.transform = `translate(${moveX.toFixed(2)}px, ${moveY.toFixed(2)}px)`;
+      });
     }, { passive: true });
 
     // Touchscreen / Mobile Tilt Support
     window.addEventListener('deviceorientation', (e) => {
       if (e.gamma === null) return;
-      const moveX = Math.max(-maxRadius, Math.min(maxRadius, e.gamma / 4));
-      const moveY = Math.max(-maxRadius, Math.min(maxRadius, (e.beta - 40) / 4));
-      leftPupil.style.transform = `translate(${moveX}px, ${moveY}px)`;
-      rightPupil.style.transform = `translate(${moveX}px, ${moveY}px)`;
+      const moveX = Math.max(-maxRadius, Math.min(maxRadius, e.gamma / 5));
+      const moveY = Math.max(-maxRadius, Math.min(maxRadius, (e.beta - 40) / 5));
+      leftPupil.style.transform = `translate(${moveX.toFixed(2)}px, ${moveY.toFixed(2)}px)`;
+      rightPupil.style.transform = `translate(${moveX.toFixed(2)}px, ${moveY.toFixed(2)}px)`;
     });
   }
 

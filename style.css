@@ -559,11 +559,9 @@ body {
 .avatar-interactive-wrapper {
   position: relative;
   z-index: 1;
-  width: 260px;
-  height: 260px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  width: 250px;
+  aspect-ratio: 896 / 1090;
+  display: block;
   animation: pip-bouncy-float 5s var(--smooth) infinite;
 }
 
@@ -577,41 +575,50 @@ body {
 .pip-hero-img {
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  display: block;
+  object-fit: fill;
   filter: drop-shadow(0 16px 20px rgba(163, 64, 99, 0.25));
   pointer-events: auto;
   cursor: pointer;
 }
 
-/* Eye Tracking Rig over Pip's Face */
+/* Eye Tracking Rig Exactly Aligned Over Pip's Skull Sockets */
 .pip-interactive-eyes {
   position: absolute;
-  top: 36%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  display: flex;
-  gap: 28px;
+  inset: 0;
   pointer-events: none;
   z-index: 2;
 }
 
-.pip-eye {
-  width: 26px;
-  height: 26px;
-  background: rgba(40, 20, 25, 0.85);
-  border-radius: 50%;
+.pip-pupil-container {
+  position: absolute;
+  width: 24px;
+  height: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3) inset;
+  transform: translate(-50%, -50%);
+}
+
+.left-eye-box {
+  left: 43.44%;
+  top: 40.34%;
+}
+
+.right-eye-box {
+  left: 57.91%;
+  top: 38.02%;
 }
 
 .pip-pupil {
-  width: 9px;
-  height: 9px;
-  background: #f5c842;
+  width: 13px;
+  height: 13px;
   border-radius: 50%;
-  box-shadow: 0 0 8px #f5c842, 0 0 16px rgba(245, 200, 66, 0.8);
+  background: radial-gradient(circle, #ffffff 15%, #ffe680 40%, #f5c842 75%, rgba(245, 200, 66, 0.3) 100%);
+  box-shadow: 
+    0 0 8px #f5c842,
+    0 0 16px rgba(245, 200, 66, 0.95),
+    0 0 24px rgba(245, 200, 66, 0.6);
   transition: transform 0.08s ease-out;
 }
 
