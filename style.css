@@ -1,0 +1,1360 @@
+/* ==========================================================================
+   🍼 PIP'S DREAM OS — 3D CLAYMORPHIC RETRO STYLESHEET
+   Built for Baby's First Website Hackathon (17-19 October 2026)
+   Palette: Warm Cream #fff8f1, Berry #a34063, Chocolate #5c4033, Gold #f5c842
+   ========================================================================== */
+
+/* ── Custom Properties & Theme Design Tokens ── */
+:root {
+  /* Brand haX.baby Palette */
+  --cream: #fff8f1;
+  --berry: #a34063;
+  --berry-light: #c2527b;
+  --berry-dark: #7a2f4a;
+  --chocolate: #5c4033;
+  --gold: #f5c842;
+  --gold-glow: rgba(245, 200, 66, 0.5);
+  --soft-pink: #f4d2d7;
+  --cloud-white: #ffffff;
+  --lavender: #e6e6fa;
+
+  /* 3D Clay Palette (Day / Cream Mode) */
+  --bg-desktop: #fff8f1;
+  --window-bg: rgba(255, 252, 248, 0.96);
+  --card-bg: #ffffff;
+  --card-border: rgba(163, 64, 99, 0.18);
+  --text-main: #5c4033;
+  --text-muted: #8b6d5c;
+  --topbar-bg: rgba(255, 248, 241, 0.92);
+  --taskbar-bg: rgba(255, 248, 241, 0.94);
+  
+  /* 3D Clay Shadows (Deep, tactile, puffy) */
+  --clay-bevel-light: rgba(255, 255, 255, 0.85);
+  --clay-bevel-dark: rgba(92, 64, 51, 0.12);
+  --shadow-window: 
+    0 18px 40px -10px rgba(163, 64, 99, 0.18),
+    0 0 0 1px rgba(255, 255, 255, 0.8) inset,
+    0 8px 0 rgba(163, 64, 99, 0.08);
+
+  --shadow-card:
+    0 12px 28px -6px rgba(163, 64, 99, 0.14),
+    0 6px 0 rgba(163, 64, 99, 0.08),
+    0 1px 0 rgba(255, 255, 255, 0.9) inset;
+
+  --shadow-btn-primary:
+    0 6px 0 var(--berry-dark),
+    0 12px 20px rgba(163, 64, 99, 0.3),
+    0 2px 0 rgba(255, 255, 255, 0.35) inset;
+
+  --shadow-btn-secondary:
+    0 5px 0 #d1b8ab,
+    0 10px 16px rgba(92, 64, 51, 0.1),
+    0 2px 0 rgba(255, 255, 255, 0.8) inset;
+
+  /* Font Families */
+  --font-serif: 'Playfair Display', Georgia, serif;
+  --font-ui: 'Fredoka', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'DM Mono', monospace;
+
+  /* Spring Physics */
+  --bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --smooth: cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* ── Night Dream Mode Tokens ── */
+[data-theme="night"] {
+  --bg-desktop: #0d0f1a;
+  --window-bg: rgba(22, 25, 41, 0.96);
+  --card-bg: #1a1e34;
+  --card-border: rgba(194, 82, 123, 0.28);
+  --text-main: #f5eedb;
+  --text-muted: #b8abc2;
+  --topbar-bg: rgba(13, 15, 26, 0.92);
+  --taskbar-bg: rgba(18, 21, 36, 0.94);
+  
+  --shadow-window: 
+    0 20px 50px -10px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(255, 255, 255, 0.12) inset,
+    0 8px 0 rgba(0, 0, 0, 0.4);
+
+  --shadow-card:
+    0 12px 30px -6px rgba(0, 0, 0, 0.45),
+    0 6px 0 rgba(0, 0, 0, 0.35),
+    0 1px 0 rgba(255, 255, 255, 0.1) inset;
+
+  --shadow-btn-primary:
+    0 6px 0 #521c31,
+    0 12px 24px rgba(163, 64, 99, 0.4),
+    0 2px 0 rgba(255, 255, 255, 0.25) inset;
+}
+
+/* ── Global Reset & Base Setup ── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+body {
+  font-family: var(--font-ui);
+  background-color: var(--bg-desktop);
+  color: var(--text-main);
+  line-height: 1.6;
+  overflow-x: hidden;
+  transition: background-color 0.5s var(--smooth), color 0.5s var(--smooth);
+  min-height: 100vh;
+  position: relative;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Sparkle Canvas Overlay ── */
+#sparkle-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 99999;
+}
+
+/* ── Parallax Sky Atmosphere ── */
+.sky-depth {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.stars-layer {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    radial-gradient(1.5px 1.5px at 10% 20%, #f5c842 100%, transparent),
+    radial-gradient(1px 1px at 30% 60%, rgba(255, 255, 255, 0.8) 100%, transparent),
+    radial-gradient(2px 2px at 70% 25%, #f4d2d7 100%, transparent),
+    radial-gradient(1.5px 1.5px at 85% 75%, #f5c842 100%, transparent),
+    radial-gradient(1px 1px at 50% 90%, rgba(255, 255, 255, 0.7) 100%, transparent),
+    radial-gradient(2px 2px at 95% 15%, #f5c842 100%, transparent),
+    radial-gradient(1.5px 1.5px at 20% 85%, #c2527b 100%, transparent);
+  background-size: 400px 400px;
+  opacity: 0.6;
+  animation: sky-drift 90s linear infinite;
+}
+
+@keyframes sky-drift {
+  from { transform: translateY(0); }
+  to { transform: translateY(-400px); }
+}
+
+.cloud-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.25;
+}
+
+.blob-1 {
+  width: 450px;
+  height: 450px;
+  background: var(--berry);
+  top: -100px;
+  left: -100px;
+}
+
+.blob-2 {
+  width: 500px;
+  height: 500px;
+  background: var(--gold);
+  bottom: 10%;
+  right: -150px;
+  opacity: 0.15;
+}
+
+.blob-3 {
+  width: 350px;
+  height: 350px;
+  background: var(--soft-pink);
+  top: 40%;
+  left: 20%;
+  opacity: 0.12;
+}
+
+/* ── Typography Utilities ── */
+.font-mono {
+  font-family: var(--font-mono);
+}
+
+.accent-text {
+  color: var(--berry);
+  font-style: italic;
+}
+
+/* ── Desktop Framework ── */
+.os-desktop {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 70px; /* taskbar clearance */
+}
+
+/* ── Menubar Header ── */
+.os-menubar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  height: 48px;
+  background: var(--topbar-bg);
+  backdrop-filter: blur(14px);
+  border-bottom: 2px solid rgba(163, 64, 99, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.menubar-left, .menubar-right {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.os-badge-btn {
+  background: var(--card-bg);
+  border: 1.5px solid var(--berry);
+  color: var(--text-main);
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  padding: 4px 12px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  box-shadow: 0 2px 0 var(--berry);
+  transition: transform 0.15s var(--bounce);
+}
+
+.os-badge-btn:hover {
+  transform: translateY(-1px);
+}
+
+.system-glyph {
+  color: var(--berry);
+  font-size: 1rem;
+}
+
+.system-status-pill {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 0.72rem;
+  font-family: var(--font-mono);
+  background: rgba(163, 64, 99, 0.12);
+  color: var(--berry);
+  padding: 3px 10px;
+  border-radius: 999px;
+  letter-spacing: 0.04em;
+}
+
+.status-indicator {
+  width: 7px;
+  height: 7px;
+  background: #00ff66;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #00ff66;
+  animation: pulse-green 2s infinite;
+}
+
+@keyframes pulse-green {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.85); }
+}
+
+.pill-btn {
+  background: var(--card-bg);
+  border: 1.5px solid var(--card-border);
+  color: var(--text-main);
+  font-family: var(--font-ui);
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  box-shadow: 0 3px 0 rgba(163, 64, 99, 0.15);
+  transition: all 0.15s var(--bounce);
+}
+
+.pill-btn:hover {
+  transform: translateY(-2px);
+  border-color: var(--berry);
+}
+
+.pill-btn:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 rgba(163, 64, 99, 0.15);
+}
+
+.system-clock {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  background: rgba(163, 64, 99, 0.08);
+  padding: 4px 10px;
+  border-radius: 8px;
+}
+
+/* ── 3D Claymorphic OS Window Shell ── */
+.os-window-shell {
+  max-width: 1200px;
+  width: 95%;
+  margin: 1.8rem auto 3rem;
+  background: var(--window-bg);
+  backdrop-filter: blur(20px);
+  border: 3px solid rgba(163, 64, 99, 0.28);
+  border-radius: 28px;
+  box-shadow: var(--shadow-window);
+  overflow: hidden;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.2s var(--smooth), box-shadow 0.3s;
+}
+
+.window-titlebar {
+  background: linear-gradient(135deg, rgba(163, 64, 99, 0.18), rgba(245, 200, 66, 0.1));
+  border-bottom: 2px solid rgba(163, 64, 99, 0.2);
+  padding: 10px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.window-controls {
+  display: flex;
+  gap: 8px;
+}
+
+.win-btn {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 2px 0 rgba(0,0,0,0.2) inset;
+}
+
+.win-close { background: #ff5f56; }
+.win-min { background: #ffbd2e; }
+.win-max { background: #27c93f; }
+
+.window-title {
+  font-size: 0.78rem;
+  color: var(--berry);
+  letter-spacing: 0.05em;
+  font-weight: 500;
+}
+
+.clay-tag {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  background: var(--berry);
+  color: #fff;
+  padding: 2px 8px;
+  border-radius: 6px;
+}
+
+.window-content {
+  padding: 2rem 2.5rem;
+}
+
+/* ── 3D Clay Buttons & Cards ── */
+.clay-btn {
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 0.8rem 1.6rem;
+  border-radius: 16px;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-decoration: none;
+  transition: transform 0.15s var(--bounce), box-shadow 0.15s ease;
+}
+
+.primary-btn {
+  background: linear-gradient(145deg, var(--berry-light), var(--berry));
+  color: #ffffff;
+  box-shadow: var(--shadow-btn-primary);
+}
+
+.primary-btn:hover {
+  transform: translateY(-3px) scale(1.02);
+  filter: brightness(1.06);
+}
+
+.primary-btn:active {
+  transform: translateY(3px) scale(0.98);
+  box-shadow: 0 2px 0 var(--berry-dark);
+}
+
+.secondary-btn {
+  background: var(--card-bg);
+  color: var(--berry);
+  border: 2px solid var(--berry);
+  box-shadow: var(--shadow-btn-secondary);
+}
+
+.secondary-btn:hover {
+  transform: translateY(-3px) scale(1.02);
+  background: var(--soft-pink);
+}
+
+.secondary-btn:active {
+  transform: translateY(2px) scale(0.98);
+}
+
+.secret-btn {
+  background: linear-gradient(145deg, #ffd166, var(--gold));
+  color: var(--chocolate);
+  box-shadow: 0 5px 0 #c29d28, 0 8px 16px rgba(245, 200, 66, 0.3);
+}
+
+.secret-btn:hover {
+  transform: translateY(-3px) rotate(-1deg);
+}
+
+.clay-card {
+  background: var(--card-bg);
+  border: 2.5px solid var(--card-border);
+  border-radius: 24px;
+  box-shadow: var(--shadow-card);
+  transition: transform 0.25s var(--bounce), border-color 0.25s;
+}
+
+/* ── Hero Section ── */
+.hero-section {
+  padding: 1.5rem 0 3.5rem;
+}
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  align-items: center;
+  gap: 3rem;
+}
+
+.sys-kicker {
+  color: var(--berry);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.6rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.hero-heading {
+  font-family: var(--font-serif);
+  font-size: clamp(2.6rem, 5.5vw, 4.2rem);
+  line-height: 1.1;
+  font-weight: 800;
+  margin-bottom: 0.8rem;
+}
+
+.hero-tagline {
+  font-family: var(--font-serif);
+  font-size: 1.35rem;
+  font-style: italic;
+  color: var(--berry);
+  margin-bottom: 1.6rem;
+}
+
+.character-bio-card {
+  padding: 1.4rem 1.6rem;
+  margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  background: linear-gradient(145deg, var(--card-bg), rgba(244, 210, 215, 0.25));
+}
+
+.bio-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.8rem;
+  font-size: 0.94rem;
+}
+
+.bio-label {
+  font-size: 0.72rem;
+  color: var(--berry);
+  min-width: 65px;
+}
+
+.highlight-pill {
+  background: rgba(163, 64, 99, 0.14);
+  color: var(--berry);
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+.hero-cta-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+}
+
+/* ── Interactive 3D Avatar Stage ── */
+.hero-avatar-stage {
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+.clay-pedestal {
+  position: relative;
+  width: 100%;
+  max-width: 380px;
+  padding: 2.5rem 1.5rem 1.8rem;
+  background: radial-gradient(circle at 50% 40%, rgba(255, 255, 255, 0.9), rgba(244, 210, 215, 0.35));
+  border: 3px solid rgba(163, 64, 99, 0.25);
+  border-radius: 36px;
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.avatar-aura {
+  position: absolute;
+  width: 220px;
+  height: 220px;
+  background: radial-gradient(circle, var(--gold) 0%, rgba(163, 64, 99, 0.2) 60%, transparent 80%);
+  border-radius: 50%;
+  filter: blur(28px);
+  z-index: 0;
+  opacity: 0.55;
+  animation: aura-pulse 4s ease-in-out infinite;
+}
+
+@keyframes aura-pulse {
+  0%, 100% { transform: scale(1); opacity: 0.55; }
+  50% { transform: scale(1.15); opacity: 0.75; }
+}
+
+.avatar-interactive-wrapper {
+  position: relative;
+  z-index: 1;
+  width: 260px;
+  height: 260px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: pip-bouncy-float 5s var(--smooth) infinite;
+}
+
+@keyframes pip-bouncy-float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-10px) rotate(-1.5deg); }
+  50% { transform: translateY(-16px) rotate(1deg); }
+  75% { transform: translateY(-6px) rotate(-0.5deg); }
+}
+
+.pip-hero-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 16px 20px rgba(163, 64, 99, 0.25));
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+/* Eye Tracking Rig over Pip's Face */
+.pip-interactive-eyes {
+  position: absolute;
+  top: 36%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  gap: 28px;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.pip-eye {
+  width: 26px;
+  height: 26px;
+  background: rgba(40, 20, 25, 0.85);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3) inset;
+}
+
+.pip-pupil {
+  width: 9px;
+  height: 9px;
+  background: #f5c842;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #f5c842, 0 0 16px rgba(245, 200, 66, 0.8);
+  transition: transform 0.08s ease-out;
+}
+
+/* Avatar Status Caption Capsule */
+.clay-capsule {
+  margin-top: 1rem;
+  background: var(--card-bg);
+  border: 2px solid rgba(163, 64, 99, 0.2);
+  border-radius: 999px;
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 4px 10px rgba(92, 64, 51, 0.08);
+  z-index: 1;
+}
+
+.caption-copy {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.caption-copy strong {
+  font-size: 0.85rem;
+  color: var(--berry);
+}
+
+.caption-copy small {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+}
+
+.poke-btn {
+  background: var(--berry);
+  color: #fff;
+  border: none;
+  font-family: var(--font-ui);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 999px;
+  cursor: pointer;
+  box-shadow: 0 2px 0 var(--berry-dark);
+}
+
+.poke-btn:active {
+  transform: translateY(2px);
+}
+
+.floating-sticker {
+  position: absolute;
+  font-size: 1.4rem;
+  pointer-events: none;
+  animation: sticker-bob 3s ease-in-out infinite alternate;
+}
+
+.sticker-stars { top: 12px; left: 16px; animation-delay: 0s; }
+.sticker-heart { top: 20px; right: 20px; animation-delay: 0.7s; }
+.sticker-moon  { bottom: 25px; left: 18px; animation-delay: 1.4s; }
+
+@keyframes sticker-bob {
+  from { transform: translateY(0) rotate(-6deg); }
+  to { transform: translateY(-8px) rotate(8deg); }
+}
+
+/* ── Section Dividers & Headers ── */
+.section-header {
+  text-align: center;
+  max-width: 650px;
+  margin: 0 auto 3rem;
+}
+
+.section-tag {
+  color: var(--berry);
+  font-size: 0.76rem;
+  letter-spacing: 0.08em;
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+.section-title {
+  font-family: var(--font-serif);
+  font-size: clamp(2rem, 4.2vw, 2.9rem);
+  font-weight: 800;
+  line-height: 1.2;
+  margin-bottom: 0.6rem;
+}
+
+.section-lead {
+  color: var(--text-muted);
+  font-size: 1rem;
+}
+
+/* ── Projects Section ── */
+.projects-section {
+  padding: 3rem 0;
+  border-top: 2px dashed rgba(163, 64, 99, 0.2);
+}
+
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 2rem;
+}
+
+.project-3d-card {
+  padding: 1.6rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transform-style: preserve-3d;
+  cursor: default;
+}
+
+.project-3d-card:hover {
+  transform: translateY(-8px);
+  border-color: var(--berry);
+  box-shadow: 
+    0 20px 38px -8px rgba(163, 64, 99, 0.25),
+    0 8px 0 rgba(163, 64, 99, 0.12);
+}
+
+.card-chip {
+  font-size: 0.68rem;
+  color: var(--berry);
+  letter-spacing: 0.06em;
+  margin-bottom: 1rem;
+}
+
+.card-visual-wrapper {
+  position: relative;
+  width: 100%;
+  height: 180px;
+  background: radial-gradient(circle, rgba(245, 200, 66, 0.15), transparent 70%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 18px;
+  margin-bottom: 1.2rem;
+  overflow: hidden;
+}
+
+.project-render {
+  max-width: 80%;
+  max-height: 140px;
+  object-fit: contain;
+  transition: transform 0.3s var(--bounce);
+  filter: drop-shadow(0 10px 14px rgba(0, 0, 0, 0.12));
+}
+
+.project-3d-card:hover .project-render {
+  transform: scale(1.08) rotate(-2deg);
+}
+
+.card-body h3 {
+  font-family: var(--font-serif);
+  font-size: 1.4rem;
+  margin-bottom: 0.6rem;
+  color: var(--text-main);
+}
+
+.card-body p {
+  font-size: 0.92rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-bottom: 1.2rem;
+}
+
+/* Interactive Project Controls */
+.mini-player-dock {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.play-lullaby-btn {
+  background: var(--berry);
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 12px;
+  font-size: 0.86rem;
+  box-shadow: 0 4px 0 var(--berry-dark);
+}
+
+.play-lullaby-btn:active {
+  transform: translateY(2px);
+}
+
+.music-meter {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 18px;
+}
+
+.music-meter span {
+  width: 3px;
+  background: var(--gold);
+  border-radius: 2px;
+  height: 4px;
+}
+
+.music-meter.playing span:nth-child(1) { animation: bar-dance 0.4s infinite alternate; }
+.music-meter.playing span:nth-child(2) { animation: bar-dance 0.6s 0.1s infinite alternate; }
+.music-meter.playing span:nth-child(3) { animation: bar-dance 0.5s 0.2s infinite alternate; }
+.music-meter.playing span:nth-child(4) { animation: bar-dance 0.7s 0.15s infinite alternate; }
+.music-meter.playing span:nth-child(5) { animation: bar-dance 0.45s 0.05s infinite alternate; }
+
+@keyframes bar-dance {
+  from { height: 4px; }
+  to { height: 18px; }
+}
+
+/* Lantern Glow Effect */
+.lantern-glow {
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  background: radial-gradient(circle, var(--gold) 0%, transparent 70%);
+  border-radius: 50%;
+  filter: blur(18px);
+  opacity: 0.6;
+  transition: background 0.4s ease;
+  pointer-events: none;
+}
+
+.lamp-palette-picker {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.picker-label {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+.color-swatches {
+  display: flex;
+  gap: 8px;
+}
+
+.swatch-btn {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  background: var(--c);
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  transition: transform 0.15s var(--bounce);
+}
+
+.swatch-btn.active {
+  transform: scale(1.25);
+  outline: 2px solid var(--berry);
+}
+
+/* Interactive Mini Map */
+.interactive-mini-map {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  background: linear-gradient(180deg, rgba(163, 64, 99, 0.1), rgba(245, 200, 66, 0.15));
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 10px;
+}
+
+.map-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  transition: transform 0.2s var(--bounce);
+  z-index: 1;
+}
+
+.map-node:hover, .map-node.active {
+  transform: translateY(-4px) scale(1.1);
+}
+
+.node-pin {
+  font-size: 1.4rem;
+}
+
+.node-bubble {
+  font-size: 0.62rem;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  padding: 1px 6px;
+  border-radius: 6px;
+  color: var(--text-main);
+}
+
+.flying-pip {
+  position: absolute;
+  font-size: 1.6rem;
+  transition: all 0.6s var(--smooth);
+  left: 20%;
+  top: 20%;
+  pointer-events: none;
+}
+
+.map-status-pill {
+  font-size: 0.74rem;
+  background: rgba(163, 64, 99, 0.08);
+  padding: 6px 10px;
+  border-radius: 8px;
+  color: var(--berry);
+}
+
+.card-footer {
+  margin-top: 1.4rem;
+  padding-top: 0.8rem;
+  border-top: 1px solid rgba(163, 64, 99, 0.15);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.68rem;
+  color: var(--text-muted);
+}
+
+.card-badge {
+  background: var(--soft-pink);
+  color: var(--berry);
+  padding: 2px 7px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+/* ── Story Section ── */
+.story-section {
+  padding: 3.5rem 0;
+  border-top: 2px dashed rgba(163, 64, 99, 0.2);
+}
+
+.story-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 2.2rem;
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.story-scene-card {
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.story-scene-card::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 6px;
+  background: var(--berry);
+  border-radius: 6px 0 0 6px;
+}
+
+.scene-badge {
+  font-size: 0.72rem;
+  color: var(--berry);
+  letter-spacing: 0.08em;
+  margin-bottom: 0.8rem;
+}
+
+.scene-grid {
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  gap: 1.8rem;
+  align-items: center;
+}
+
+.scene-glyph-box {
+  width: 80px;
+  height: 80px;
+  border-radius: 20px;
+  background: radial-gradient(circle, rgba(245, 200, 66, 0.2), rgba(163, 64, 99, 0.1));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--card-border);
+}
+
+.glyph-big {
+  font-size: 2.2rem;
+}
+
+.scene-text h3 {
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  color: var(--text-main);
+}
+
+.scene-text p {
+  font-size: 0.96rem;
+  color: var(--text-muted);
+  line-height: 1.7;
+  margin-bottom: 0.6rem;
+}
+
+.scene-quote {
+  display: inline-block;
+  font-size: 0.86rem;
+  font-style: italic;
+  color: var(--berry);
+}
+
+/* ── Guestbook Section (+2 pts Side Quest) ── */
+.guestbook-section {
+  padding: 3rem 0;
+  border-top: 2px dashed rgba(163, 64, 99, 0.2);
+}
+
+.guestbook-box {
+  padding: 2.4rem;
+  max-width: 860px;
+  margin: 0 auto;
+  background: linear-gradient(145deg, var(--card-bg), rgba(245, 200, 66, 0.06));
+}
+
+.guestbook-header {
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.tag-pill {
+  font-size: 0.72rem;
+  color: var(--berry);
+  margin-bottom: 0.4rem;
+}
+
+.guestbook-header h3 {
+  font-family: var(--font-serif);
+  font-size: 1.8rem;
+  margin-bottom: 0.4rem;
+}
+
+.guestbook-header p {
+  color: var(--text-muted);
+  font-size: 0.92rem;
+}
+
+.guestbook-form .form-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 1.8rem;
+}
+
+.clay-input {
+  font-family: var(--font-ui);
+  font-size: 0.92rem;
+  padding: 0.75rem 1.2rem;
+  border: 2px solid var(--card-border);
+  border-radius: 14px;
+  background: var(--card-bg);
+  color: var(--text-main);
+  outline: none;
+  transition: border-color 0.2s;
+  flex: 1;
+  min-width: 200px;
+}
+
+.clay-input:focus {
+  border-color: var(--berry);
+}
+
+.submit-btn {
+  padding: 0.75rem 1.4rem;
+}
+
+.wishes-wall {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.wish-item {
+  background: var(--card-bg);
+  border: 1.5px solid var(--card-border);
+  padding: 1rem 1.2rem;
+  border-radius: 16px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  font-size: 0.88rem;
+}
+
+.wish-author {
+  font-weight: 700;
+  color: var(--berry);
+  margin-bottom: 4px;
+  font-size: 0.82rem;
+}
+
+.wish-message {
+  color: var(--text-main);
+}
+
+/* ── Footer ── */
+.os-footer {
+  margin-top: 3.5rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(163, 64, 99, 0.2);
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1fr;
+  gap: 2rem;
+}
+
+.footer-brand {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--berry);
+  font-size: 1.1rem;
+  margin-bottom: 0.4rem;
+}
+
+.footer-tagline {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.footer-col strong {
+  display: block;
+  color: var(--berry);
+  margin-bottom: 0.4rem;
+}
+
+.footer-col p {
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin-bottom: 0.3rem;
+}
+
+.footer-col a {
+  color: var(--berry);
+  text-decoration: underline;
+}
+
+/* ── Bottom Taskbar Dock ── */
+.os-taskbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 58px;
+  background: var(--taskbar-bg);
+  backdrop-filter: blur(18px);
+  border-top: 2px solid rgba(163, 64, 99, 0.25);
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.taskbar-inner {
+  width: 95%;
+  max-width: 1200px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.taskbar-start-btn {
+  padding: 6px 14px;
+  font-size: 0.88rem;
+  border-radius: 12px;
+  background: linear-gradient(145deg, var(--berry), var(--berry-dark));
+  color: #fff;
+  box-shadow: 0 4px 0 var(--berry-dark);
+}
+
+.taskbar-tabs {
+  display: flex;
+  gap: 8px;
+}
+
+.tab-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: var(--card-bg);
+  border: 1.5px solid var(--card-border);
+  border-radius: 10px;
+  text-decoration: none;
+  color: var(--text-main);
+  font-size: 0.82rem;
+  font-weight: 600;
+  box-shadow: 0 2px 0 rgba(163, 64, 99, 0.1);
+  transition: all 0.15s var(--bounce);
+}
+
+.tab-item:hover, .tab-item.active {
+  background: var(--soft-pink);
+  border-color: var(--berry);
+  color: var(--berry);
+  transform: translateY(-2px);
+}
+
+.taskbar-odometer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.odo-label {
+  font-size: 0.68rem;
+  color: var(--berry);
+  font-weight: 500;
+}
+
+.odometer-ticker {
+  display: flex;
+  gap: 2px;
+  background: #000;
+  padding: 3px 6px;
+  border-radius: 6px;
+  border: 1.5px solid var(--berry);
+  box-shadow: 0 0 8px rgba(163, 64, 99, 0.3);
+}
+
+.digit {
+  color: #00ff66;
+  font-size: 0.82rem;
+  font-weight: bold;
+  padding: 0 2px;
+  background: #0d120f;
+  border-radius: 2px;
+}
+
+/* ── Secret Easter Egg Toast ── */
+.secret-toast {
+  position: fixed;
+  bottom: 80px;
+  right: 24px;
+  z-index: 10000;
+  background: var(--berry);
+  color: #fff;
+  border-radius: 18px;
+  padding: 1.2rem 1.6rem;
+  box-shadow: 0 16px 36px rgba(163, 64, 99, 0.45);
+  border: 2px solid #fff;
+  transform: translateY(120px) scale(0.9);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.35s var(--bounce);
+}
+
+.secret-toast.visible {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.toast-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.toast-glyph {
+  font-size: 2rem;
+}
+
+/* ── Responsive Mobile Optimizations ── */
+@media (max-width: 992px) {
+  .hero-grid {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+  .character-bio-card {
+    text-align: left;
+  }
+  .hero-cta-group {
+    justify-content: center;
+  }
+  .hero-avatar-stage {
+    margin-top: 1rem;
+  }
+  .projects-grid {
+    grid-template-columns: 1fr;
+  }
+  .footer-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .os-menubar {
+    padding: 0 1rem;
+  }
+  .system-status-pill {
+    display: none;
+  }
+  .window-content {
+    padding: 1.2rem 1.2rem;
+  }
+  .hero-heading {
+    font-size: 2.3rem;
+  }
+  .scene-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  .scene-glyph-box {
+    width: 60px;
+    height: 60px;
+  }
+  .glyph-big {
+    font-size: 1.6rem;
+  }
+  .taskbar-tabs .tab-label {
+    display: none;
+  }
+  .odo-label {
+    display: none;
+  }
+  .pip-interactive-eyes {
+    gap: 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .os-window-shell {
+    width: 98%;
+    border-radius: 18px;
+  }
+  .hero-cta-group .clay-btn {
+    width: 100%;
+  }
+  .guestbook-form .form-row {
+    flex-direction: column;
+  }
+}
